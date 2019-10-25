@@ -1,8 +1,5 @@
 # AutoBOD
-Package for Interpretation and Analysis of AutoBOD (Auto Biological Oxygen Demand) Files
+Package for Interpretation and Analysis of AutoBOD (Automated Biological Oxygen Demand) Files
 
 25 October 2019
-I've finished the AutoBOD Shiny App v. 0.1. It works on >1 computer, which is the goal. Uploading to Github and sharing with Chance English at UCSD for more testing. 
-
-
-
+This package contains an R-based Shiny App to visualize data produced by an AutoBOD analyzer. The AutoBOD and this package were designed in the [Van Mooy Lab](http://www.whoi.edu/page.do?pid=80356) at [Woods Hole Oceanographic Institution](http://www.whoi.edu/)
