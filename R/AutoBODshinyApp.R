@@ -13,7 +13,7 @@
 #' @examples
 AutoBOD_app <- function(){
 
-  ui <- fluidPage(theme = "bootstrap.css",
+  ui <- shiny::fluidPage(theme = "bootstrap.css",
                   tabsetPanel(
                     tabPanel(
                       title = "Choose a File",
@@ -50,7 +50,7 @@ AutoBOD_app <- function(){
   # Define server logic ----
   server <- function(input, output) {
 
-    autoBOD_file <- reactive({
+    autoBOD_file <- shiny::reactive({
       req(input$file)
       read.csv(input$file$datapath, header = TRUE,
                sep = ",")
@@ -58,7 +58,7 @@ AutoBOD_app <- function(){
     })
 
     # show the head of the file we import to make sure the format is right
-    output$values <- renderTable({
+    output$values <- shiny::renderTable({
 
       req(input$file)
 
@@ -74,7 +74,7 @@ AutoBOD_app <- function(){
       bottles$phase <- sapply(bottles$phase, function(x) as.numeric(as.character(x)))
       bottles$airTemp <- sapply(bottles$airTemp, function(x) as.numeric(as.character(x)))
 
-      bottles <- bottles %>% mutate(new_phase = phase/100,
+      bottles <- bottles %>% dplyr::mutate(new_phase = phase/100,
                                     airsat = calc_air_sat(phase = new_phase, IRBotT = IRBotT),
                                     o2conc = calc_o2_conc(airsat = airsat, IRBotT = IRBotT),
                                     o2conc_umol_L = o2conc*31.25, datetime = as.POSIXct(lubridate::mdy_hms(paste(Date, Time, sep = " "))),
@@ -84,8 +84,8 @@ AutoBOD_app <- function(){
 
     })
 
-    output$bottle_input <- renderUI({
-      req(autoBOD_file())
+    output$bottle_input <- shiny::renderUI({
+      shiny::req(autoBOD_file())
       bottles <- autoBOD_file()
 
       if(input$first_row != 1){
@@ -94,7 +94,7 @@ AutoBOD_app <- function(){
       if(input$header == FALSE){
         colnames(bottles) <- c("amplitude", "phase", "airTemp", "oxygen", "error", "encoder", "bottle", "sample", "Date", "Time", "IRdetT", "IRBotT")}
 
-      pickerInput(
+      shinyWidgets::pickerInput(
         inputId = "bottle_choice",
         label = "Choose bottle",
         choices = c("All", c(1:12)),
@@ -103,8 +103,8 @@ AutoBOD_app <- function(){
       )
     })
 
-    output$time_range <- renderUI({
-      req(autoBOD_file())
+    output$time_range <- shiny::renderUI({
+      shiny::req(autoBOD_file())
       bottles <- autoBOD_file()
 
       if(input$header == FALSE){
@@ -123,7 +123,7 @@ AutoBOD_app <- function(){
                                     o2conc_umol_L = o2conc*31.25, datetime = as.POSIXct(lubridate::mdy_hms(paste(Date, Time, sep = " "))),
                                     unclassdatetime = as.POSIXct(datetime))
 
-      validate(
+      shiny::validate(
         need(input$bottle_choice, 'Please select at least one bottle')
       )
 
@@ -136,7 +136,7 @@ AutoBOD_app <- function(){
 
       min_time <- as.POSIXct(min(as.numeric(bottle_plot$datetime)), origin = "1970-01-01 00:00.00 UTC")
       max_time <- as.POSIXct(max(as.numeric(bottle_plot$datetime)), origin = "1970-01-01 00:00.00 UTC")
-      sliderInput(inputId = "range",
+      shiny::sliderInput(inputId = "range",
                   label = "Time Range",
                   min = min_time, max = max_time,
                   value = c(min_time, max_time), step = 60)
@@ -147,7 +147,7 @@ AutoBOD_app <- function(){
     output$plot <- renderPlot({
       req(input$file)
 
-      validate(
+      shiny::validate(
         need(input$bottle_choice, 'Please select at least one bottle')
       )
 
@@ -164,7 +164,7 @@ AutoBOD_app <- function(){
       bottles$airTemp <- sapply(bottles$airTemp, function(x) as.numeric(as.character(x)))
 
       # need to fix as.POSIXct -- no idea why it's not working
-      bottles <- bottles %>% mutate(new_phase = phase/100,
+      bottles <- bottles %>% dplyr::mutate(new_phase = phase/100,
                                     airsat = calc_air_sat(phase = new_phase, IRBotT = IRBotT),
                                     o2conc = calc_o2_conc(airsat = airsat, IRBotT = IRBotT),
                                     o2conc_umol_L = o2conc*31.25, datetime = as.POSIXct(lubridate::mdy_hms(paste(Date, Time, sep = " "))),
@@ -186,8 +186,8 @@ AutoBOD_app <- function(){
 
       bottle_plot <- bottles
 
-      bottle_plot <- bottle_plot %>% filter(unclassdatetime >= as.POSIXct(input$range[1]), unclassdatetime <= as.POSIXct(input$range[2]))
-      o2_vs_time <- ggplot(bottles, aes(x = datetime, y = o2conc_umol_L, color = bottle_number))+
+      bottle_plot <- bottle_plot %>% dplyr::filter(unclassdatetime >= as.POSIXct(input$range[1]), unclassdatetime <= as.POSIXct(input$range[2]))
+      o2_vs_time <- ggplot2::ggplot(bottles, aes(x = datetime, y = o2conc_umol_L, color = bottle_number))+
         geom_point()+
         scale_color_manual(values = c("1" = "darkorange1",
                                       "2" = "darkgreen",
@@ -205,18 +205,18 @@ AutoBOD_app <- function(){
 
       # subset for bottle choice - if you're not
       if("All"%in%input$bottle_choice!=TRUE){
-        bottle_plot <- bottle_plot %>% filter(bottle == input$bottle_choice)
-        bottles <- bottles %>% filter(bottle == input$bottle_choice)
+        bottle_plot <- bottle_plot %>% dplyr::filter(bottle == input$bottle_choice)
+        bottles <- bottles %>% dplyr::filter(bottle == input$bottle_choice)
 
         monte_carlo_estimates <- Monte_Carlo_Slope_Sim(Bottle = bottle_plot)
-        grob <- grobTree(textGrob(label = paste0("Number of Pairs = ", monte_carlo_estimates$Number_of_Pairs, ", ",
+        grob <- grid::grobTree(textGrob(label = paste0("Number of Pairs = ", monte_carlo_estimates$Number_of_Pairs, ", ",
                                                  "Mean dO2 per hour = ", round(monte_carlo_estimates$Avg_dO2_umol_hour, digits = 4), ", ",
                                                  "Standard Error =", round(monte_carlo_estimates$Slope_SE, digits = 4)),
                                   x=0.4,
                                   y=0.95,
                                   hjust=0,
                                   gp=gpar(col="red", fontsize=13, fontface="italic")))
-        o2_vs_time <- ggplot()+
+        o2_vs_time <- ggplot2::ggplot()+
           geom_point(data = bottles, aes(x = datetime, y = o2conc_umol_L))+
           geom_point(data = bottle_plot, aes(x = datetime, y = o2conc_umol_L, color = "red"))+
           annotation_custom(grob)
@@ -240,6 +240,6 @@ AutoBOD_app <- function(){
 
 
   # Run the app ----
-  shinyApp(ui = ui, server = server)
+  shiny::shinyApp(ui = ui, server = server)
 
 }

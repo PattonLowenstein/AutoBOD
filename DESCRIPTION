@@ -19,3 +19,11 @@ Imports:
     ggplot2,
     grid,
     lubridate
+Depends: 
+    shinyWidgets,
+    shiny,
+    tidyr,
+    dplyr,
+    ggplot2,
+    grid,
+    lubridate
