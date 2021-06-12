@@ -88,7 +88,7 @@ AutoBOD_app <- function(){
       bottles <- autoBOD_file$data
       
       if(input$header == FALSE){
-        colnames(bottles) <- c("amplitude", "phase", "oxygen", "error", "encoder", "bottle", "sample", "Date", "Time", "IRdetT", "IRBotT", "Serial_Number", "Corrective_Steps")} #"IR_det_RAW", "IR_bot_RAW",airTemp no longer reported
+        colnames(bottles) <- c("amplitude", "phase",  "oxygen", "error", "encoder", "bottle", "sample", "Date", "Time", "IRdetT", "IRBotT", "mystery_column", "Corrective_Steps", "Serial_Number")} #"IR_det_RAW", "IR_bot_RAW",airTemp no longer reported
       
       if(input$first_row != 1){
         bottles <- bottles[-c(1:(input$first_row - 1)),]
@@ -115,7 +115,7 @@ AutoBOD_app <- function(){
         bottles <- bottles[-c(1:(input$first_row - 1)),]
       }
       if(input$header == FALSE){
-        colnames(bottles) <- c("amplitude", "phase",  "oxygen", "error", "encoder", "bottle", "sample", "Date", "Time", "IRdetT", "IRBotT", "Serial_Number", "Corrective_Steps")} #"IR_det_RAW", "IR_bot_RAW", "airTemp" no longer reported
+        colnames(bottles) <- c("amplitude", "phase",  "oxygen", "error", "encoder", "bottle", "sample", "Date", "Time", "IRdetT", "IRBotT", "mystery_column", "Corrective_Steps", "Serial_Number")} #"IR_det_RAW", "IR_bot_RAW", "airTemp" no longer reported
       
       shinyWidgets::pickerInput(
         inputId = "bottle_choice",
@@ -131,7 +131,7 @@ AutoBOD_app <- function(){
       bottles <- autoBOD_file$data
       
       if(input$header == FALSE){
-        colnames(bottles) <- c("amplitude", "phase", "oxygen", "error", "encoder", "bottle", "sample", "Date", "Time", "IRdetT", "IRBotT", "Serial_Number", "Corrective_Steps")} #"IR_det_RAW", "IR_bot_RAW", airTemp no longer reported
+        colnames(bottles) <- c("amplitude", "phase",  "oxygen", "error", "encoder", "bottle", "sample", "Date", "Time", "IRdetT", "IRBotT", "mystery_column", "Corrective_Steps", "Serial_Number")} #"IR_det_RAW", "IR_bot_RAW", airTemp no longer reported
       
       if(input$first_row != 1){
         bottles <- bottles[-c(1:(input$first_row - 1)),]
@@ -177,7 +177,7 @@ AutoBOD_app <- function(){
       bottles <- autoBOD_file$data
       
       if(input$header == FALSE){
-        colnames(bottles) <- c("amplitude", "phase",  "oxygen", "error", "encoder", "bottle", "sample", "Date", "Time", "IRdetT", "IRBotT", "Serial_Number", "Corrective_Steps")} #"IR_det_RAW", "IR_bot_RAW", "airTemp", no longer reported
+        colnames(bottles) <- c("amplitude", "phase",  "oxygen", "error", "encoder", "bottle", "sample", "Date", "Time", "IRdetT", "IRBotT", "mystery_column", "Corrective_Steps", "Serial_Number")} #"IR_det_RAW", "IR_bot_RAW", "airTemp", no longer reported
       
       if(input$first_row != 1){
         bottles <- bottles[-c(1:(input$first_row - 1)),]
